@@ -26,4 +26,11 @@ b{
 }
 a{
 	color: #FF4500;
+	text-decoration: none;
+}
+a:hover{
+	text-decoration: underline;
+}
+#drag-cap{
+	font-size: 1.5em;
 }
