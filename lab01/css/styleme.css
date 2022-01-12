@@ -1,0 +1,47 @@
+h2, h1{
+	color: #1E90FF;
+}
+body{
+	background-color: #FFFACD;
+	margin-left: 2em;
+}
+img.giphy{
+	height: 300px;
+	width: 300px;
+}
+.list{
+	font-family: Verdana;
+	font-style: normal;
+	font-size: 20px;
+	font-style: italic;
+}
+.mood{
+	font-family: Georgia;
+	font-style: normal;
+	font-size: 18px;
+	font-style: italic;
+}
+b{
+	color: #32CD32;
+}
+a{
+	color: #FF4500;
+	text-decoration: none;
+}
+a:hover{
+	text-decoration: underline;
+}
+#drag-cap{
+	font-size: 1.5em;
+}
+ol{
+     counter-reset:item 4; 
+}
+ol li {
+    counter-increment:item -1;
+    list-style-type:none;
+   
+}
+ol li:before {
+    content:counter(item) ". ";
+}

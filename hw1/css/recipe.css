@@ -1,0 +1,62 @@
+
+h1, h2, h3 
+{
+	color:#A4A400;
+    font: "Lucida Sans Unicode", "Helvetica", "Arial", "sans-serif";
+    background: #F0F0F0;
+    text-decoration: underline;
+}
+
+#main
+{
+     text-align: center;
+}
+
+.bodytext
+{
+	color: #404040;
+	font-family: "Georgia" , "Garamond", "serif";
+	}
+a
+{
+	color:#A4A400; 
+}
+
+.abbr { 
+	font-style: italic;
+    text-decoration: underline;
+    ;
+}
+
+.copyright
+{
+	font: monospace;
+	text-align: center;
+}
+
+.recipeinfo
+{
+	list-style-type: none;
+	text-align: left;
+    padding: 0em;
+    color: #404040;
+	font-family: "Georgia" , "Garamond", "serif";
+}
+
+.ingredients
+{
+	list-style-type: disc;
+	text-align: left;
+    color: #404040;
+	font-family: "Georgia" , "Garamond", "serif";
+}
+
+ol 
+{
+	list-style-type: decimal;
+}
+
+blockquote
+{
+background: #FFFFA8 ;
+}
