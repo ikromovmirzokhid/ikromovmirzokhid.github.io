@@ -1,0 +1,193 @@
+
+
+body 
+{
+	background-image: url("images/background.png");
+	font-family: Verdana, Tahoma, sans-serif;
+	margin: 0;
+	padding: 0;
+}
+
+#banner
+{
+	top:0;
+	background-image: url("images/bannerbg.png");
+	height: 50px;
+	width: 100%;
+	text-align: center;
+}
+
+#rotten33
+{
+  height: 83px;
+  background-image: url("images/rbg.png");
+  
+ 
+  color: rgb(255,9,9);
+}
+
+h1 
+{
+	text-align: center;
+	 text-shadow: 3px 3px  #999999;
+}
+
+#container 
+{
+  border-style: solid;
+  border-width: 2px;
+  width: 800px;
+  height: 100%;
+  margin: auto;
+  clear: left;
+  margin-bottom: 0;
+  overflow-x: auto;
+  border-color: gray;
+  
+  border-radius: 20px;
+}
+
+#leftcolumn
+{
+	
+	border-width: 2px;
+	float: left;
+	overflow: visible;
+	width: 550px;
+}
+
+#rightcolumn {
+  
+  border-width: 2px;
+  overflow: visible;
+  background-color: #A2B964;
+  width: 250px;
+  float: right;
+  max-height: 100%;
+}
+
+.critiquecolumn {
+  width: 47%;
+  padding-left: 2%;
+  float: left;
+}
+
+.critique {
+  opacity: 100;
+  overflow: visible;
+  border: 2px solid;
+  width: 100%;
+  margin: 2px;
+  font-size: 8pt;
+  border-radius: 10px;
+  background-color: #E8DC9B;
+  border-color: gray;
+  width: initial;
+}
+  
+.critiquecontainer {
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  font-weight: bold;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.signiture {
+  font-style: italic;
+  font-family: Verdana, Tahoma, sans-serif;
+  font-size: 8pt;
+  font-weight: 100;
+}
+
+.validator {
+  right: 0px;
+  bottom: 0px;
+  opacity: 0.5;
+  position: fixed;
+}
+
+
+
+#validator
+{
+  float: right;
+  position: static;
+  clear: both;
+}
+
+
+#footer {
+   /* margin: inherit; */
+  /* float: right; */
+  text-align: center;
+  position: relative;
+  
+  bottom: 100px;
+  /* right: 20px; */
+  top: 0;
+  vertical-align: bottom;
+  float: right;
+  clear: right;
+  background-color: #A2B964;
+  width: 100%;
+  margin-top: 0px;
+margin-bottom: 0px;
+font-size: 8pt;
+}
+
+.footer {
+    clear: both;
+    text-align: center;
+    background-color: #A2B964;
+    padding-bottom: 5px;
+    font-size: 8pt;
+}
+
+p img 
+{
+	float: left;
+}
+
+
+#imagepercent {
+  color: red;
+  font-weight: bold;
+  font-size: 48pt;
+  vertical-align: text-bottom;
+}
+
+#overviewdata
+{
+	width: 100%;
+  z-index: 1;
+  margin-bottom: 0;
+  border-radius: 20px;
+  overflow: visible;
+}
+
+dt
+{
+  font-weight: bold;
+}
+
+
+
+  dl {
+  font-family: Arial, sans-serif;
+  font-size: 8pt;
+  padding-left: 5px;
+}
+
+li
+{
+  list-style-type: none;
+  text-align: left;
+
+}
+
+ul 
+{
+  padding-left: 0px;
+}
