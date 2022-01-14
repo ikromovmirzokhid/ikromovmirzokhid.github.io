@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>Retrieve Grade</title>
+
+		<meta charset="utf-8" />
+		
+		<link href="grade.css" type="text/css" rel="stylesheet" />
+
+	</head>
+
+	<body>
+
+<div>
+
+	<Form action="http://mumstudents.org/params.php" method="POST">
+		<fieldset>
+			<legend>Retrieve your grade</legend>
+			<Table>
+				<tr><td>Name:</td>
+              <td><input type="text" name="txtName" size="16" /> </td>
+						</tr>
+					 		<tr><td> 
+					 							 		 Student ID:</td>
+					 							         <td><input type="text" name="txtStudentId" maxlength="6" size="10" /> </td>
+					 							         </tr>
+					 
+					        <tr>
+							<td> 
+							Student's Entry
+							</td>
+							<td colspan="2">
+							<input type="radio" name="rbGender" value="November"  checked/>November
+							<input type="radio" name="rbGender" value="February"/>February
+							<input type="radio" name="rbGender" value="May"/>May
+							<input type="radio" name="rbGender" value="August"/>August
+
+						</td>
+												 		
+
+
+								</tr>
+					 <tr>
+					 					         <td> 
+					 					         Assignment type:</td>
+					 					         <td>
+					 					         <select name = "assgnType"> 
+					 					         	<option value="lab0">Lab0 - My Homepage Lab</option>
+					 					         	<option value="lab1">Lab1 - About Me Lab</option>
+					 					         	<option value="hw1">HW1 - Recipe</option>
+					 					         	<option value="hw2">HW2 - Movie Review</option>
+					 					         	<option value="lab2">Lab2 - Grades Exercises</option>
+					 					         	<option value="lab3">Lab3 - HTML Forms Lab</option>
+					 					         	
+					 					         </select>
+					 					     </td>
+					 		<tr>
+					 			<td>
+					 				Not lying confirmation
+					 			</td>
+					 			<td>
+					 				<input type="checkbox" name="confirmation" value="yes">
+					 			</td>
+					 		</tr>
+					 					     	</p></tr>
+					     </Table>
+
+					     <br><br>
+							<input type="submit" value="Get Grade!"/>
+
+					 </fieldset> 
+    </Form>
+</div>
+			<br>
+			<a href="https://webster.cs.washington.edu/validate-html.php">
+				<img src="images/w3c-html5.png" alt="Valid HTML" />
+			</a>
+			<a href="https://webster.cs.washington.edu/validate-css.php">
+				<img src="images/w3c-css.png" alt="Valid CSS" />
+			</a>
+	</body>
+</html>
+
