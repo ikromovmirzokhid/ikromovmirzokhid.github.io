@@ -1,0 +1,45 @@
+/* 
+    Document   : ascii
+    Created on : Feb 13, 2013, 8:09:29 PM
+    Author     : Caodanbobo
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+body{
+    background-color: #CCCCFF;
+    font-family: sans-serif;
+    font-size: 14pt;
+    font-weight: bold;
+}
+h1{
+    font-size: 32pt;
+     font-weight: bold;
+     text-align: center;
+     margin: 0;
+}
+#box{
+    width: 90%;
+    height: 400px;
+    font-family:  monospace;
+    font-size: 12pt;
+    font-weight: bold;
+     margin-left: 5%;
+    margin-right: 5%;
+    
+}
+fieldset{
+    display: inline; 
+    border: 5px solid;
+}
+#filed{
+    text-align: center;
+}
+#links{
+    float: right;
+}
+
+
