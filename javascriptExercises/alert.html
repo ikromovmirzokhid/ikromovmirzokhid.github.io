@@ -6,7 +6,7 @@
 </head>
 <body>
 
-	<button style="width: 100px; height: 50px" type="button" onclick="alertFunction()">
+	<button id="btn" style="width: 100px; height: 50px" type="button">
 		Click Me
 	</button>
 
@@ -14,6 +14,14 @@
 		function alertFunction(){
 			alert("You Clicked Me!")
 		}
+
+		var btn = document.getElementById("btn")
+		var myfunc = function(a, x) {
+ 			return a * x;
+		};
+		var x = myfunc(2, 3);
+		var y = myfunc;
+		btn.onclick = alertFunction
 	</script>
 </body>
 </html>
