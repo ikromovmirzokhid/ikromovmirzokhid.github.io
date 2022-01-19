@@ -1,2 +1,3 @@
 Ex1: https://ikromovmirzokhid.github.io/javascriptExercises/module1.html
+Ex2: https://ikromovmirzokhid.github.io/javascriptExercises/module2.html
 	
