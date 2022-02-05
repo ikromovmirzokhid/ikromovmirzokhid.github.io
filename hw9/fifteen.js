@@ -1,169 +1,181 @@
-var puzzle = [];
-var backPiece = [];
+(function () {
+   "use strict";
+
+   let NUM = 4; //the number of rows/cols in the puzzle
+   let spaceRow = 3; 
+   let spaceColumn = 3; 
+   let WIDTH = 100; // the pixel width/height of each tile
+
+   // gets everything set when the window has loaded
+   window.onload = function () {
+      setSize();
+      document.getElementById("select").onchange = changeSize;
+      document.getElementById("shufflebutton").onclick = shuffle;
+      createSquares();
+
+   };
+
+   // add a drop-down list to select difficulty level
+   function setSize() {
+      var select = document.createElement("select");
+      select.id = "select";
+      for (var i = 3; i < 7; i++) {
+         var option = document.createElement("option");
+         option.innerHTML = i + " * " + i;
+         option.value = i;
+         option.id = "option" + i;
+         select.appendChild(option);
+      }
+      document.getElementById("controls").appendChild(select);
+      document.getElementById("option4").selected = "selected";
+   }
 
 
-window.onload = function() {
-    puzzle =  $$("#puzzlearea div");
-    var row = 0, right = 0, top = 0;
+   function changeSize() {
+      NUM = this.value;
+      spaceRow = this.value - 1;
+      spaceColumn = this.value - 1;
+      WIDTH = parseInt(400 / this.value);
+      var puzzlearea = document.getElementById("puzzlearea");
+      while (puzzlearea.contains(document.querySelector(".puzzletile"))) {
+         puzzlearea.removeChild(document.querySelector(".puzzletile"));
+      }
+      createSquares();
+   }
 
-  for (var i=0;i<puzzle.length;i++){
-        puzzle[i].addClassName("puzzlepiece");
-        puzzle[i].style.float = "left";
-       puzzle[i].style.backgroundSize = "400px 400px";
+   // creates 15 puzzle tiles and sets them to their initial position
+   function createSquares() {
+      for (var i = 1; i < NUM * NUM; i++) {
+         var div = document.createElement("div");
+         div.className = "puzzletile";
+         div.innerHTML = i;
+         var row = Math.floor((i - 1) / NUM);
+         var column = (i - 1) % NUM;
+         var x = column * -1 * WIDTH + "px";
+         var y = row * -1 * WIDTH + "px";
+
+        
+         div.style.height = WIDTH - 10 + "px";
+         div.style.width = div.style.height;
+         
+         div.style.backgroundPosition = x + " " + y;
+        
+         div.id = "square_" + row + "_" + column;
        
-       backPiece[i] = [];
-       backPiece[i][0] = right;
-       backPiece[i][1] = top;
-
-       puzzle[i].style.backgroundPosition = "-"+backPiece[i][0]+"px -"+backPiece[i][1]+"px";
-       row ++;
-       if (row === 4){top += 100; right = 0; row = 0; } else {right +=100;}
-    }
-
-  var freemove = document.createElement("div");
-   $("puzzlearea").appendChild(freemove); //add a div that acts as the free move 
-   blankP(freemove);
-
-
-   puzzle = $$("#puzzlearea div"); // "reassign" the array puzzle with the new div added
-   $("shufflebutton").observe('click', shufflePuzzle);
-   movepiece();
-};
-
-// the function blankP is used to create the blank background for the space that represents the available move
-var blankP = function(el){
-  el.removeClassName("movablepiece");
-  el.addClassName("puzzlepiece");
-  el.style.float = "left";
-  el.style.backgroundImage = "none";
-  el.style.border = "2px solid white";
-};
-
-//the background_Position function is used to place the correct background piece to the number on the puzzlepiece.
-var background_Position = function(piece , item){
-  piece.style.backgroundPosition = "-"+backPiece[item-1][0]+"px -"+backPiece[item-1][1]+"px";
-};
-
-// the regularP function is used to apply the background to a numbered piece. 
-var regularP = function(p){
-      p.addClassName("puzzlepiece");
-      p.style.border = "2px solid black";
-      p.style.backgroundImage = "url(background.jpg)";
-      p.style.backgroundSize = "400px 400px";
-};
-
-//the shuffluePuzzle function is used to shullfe each puzzle on the page.
-function shufflePuzzle(){
-	var numArray = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
-	for (var i=puzzle.length; i>0; i){
-		var j = Math.floor(Math.random() * i);
-		var x = numArray[--i];
-		var test = numArray[j];
-		if(test == "0") { 
-			puzzle[i].addClassName("puzzlepiece");
-	 		blankP(puzzle[i]);
-	 		puzzle[i].innerHTML = "";
-					}
-		else{
-     			puzzle[i].innerHTML = numArray[j];
-      			regularP(puzzle[i]);
-      			background_Position(puzzle[i], test);
-          }
-			numArray[j] = x;
-    }
-  	mopiece();
+         div.style.top = row * WIDTH + "px";
+         div.style.left = column * WIDTH + "px";
+         setEvents(div);
+         document.getElementById("puzzlearea").appendChild(div);
+      }
    }
 
-//this function places the class movablepiece
-var movePA = function(piece){
-  puzzle[piece].addClassName("movablepiece");
-};
+   // shuffles puzzle tiles for 1000 times
+   function shuffle() {
+      
+      for (let j = 0; j < 1000; j++) {
+         let neigbors = [];
+        
+         let allPuzzles = document.getElementsByClassName("puzzletile");
+         
+         for (let i = 0; i < allPuzzles.length; i++) {
+           
+            if (moveable(allPuzzles[i]))
+               neigbors.push(allPuzzles[i]);
+            }
+         
+         let ranNum = getRandomIntInclusive(0, neigbors.length - 1);
+        
+         let tempTop = neigbors[ranNum].style.top;
+         let tempLeft = neigbors[ranNum].style.left;
+        
+         neigbors[ranNum].style.top = spaceRow * WIDTH + "px";
+         neigbors[ranNum].style.left = spaceColumn * WIDTH + "px";
+         neigbors[ranNum].id = "square_" + spaceRow + "_" + spaceColumn;
+         
+         spaceRow = parseInt(tempTop) / WIDTH;
+         spaceColumn = parseInt(tempLeft) / WIDTH;
+      }
 
-//the movepiece function is used to actually move the piece that is clicked on into the space.
-var movepiece = function(){
-    var move = this.innerHTML;
-    var yon = this.hasClassName('movablepiece');
-    var blank = 0;
-    if (yon){
-      	for (var i=0;i<puzzle.length;i++){
-        	blank = puzzle[i].innerHTML;
-         	if (puzzle[i].innerHTML == ""){
-          		puzzle[i].innerHTML = move;
-          		this.innerHTML = blank;
 
-          		regularP(puzzle[i]);
-          		blankP(this);
-
-        		 mopiece();
-        		 background_Position(puzzle[i], move);
-      }    
-     } 
    }
-         };
 
-//the function mopiece is used to calculate which pieces are beside the space and are able to move, thus applying the 'movablepiece' class
-var mopiece = function(){
-	for (var i=0;i<puzzle.length;i++){
-		puzzle[i].removeClassName("movablepiece");	}
-		  for (var i=0; i<puzzle.length; i++){
-  			if (puzzle[i].innerHTML == ""){         
- 				  puzzle[i].removeClassName("movablepiece");
+   
+   function getRandomIntInclusive(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+   }
 
-  				switch(i){
-  					case 0:
-  						movePA(i+1);
-  						movePA(i+4);
-              					break;
-  					case 1:
-  					case 2:
-  						movePA(i-1);
-  						movePA(i+1);
-        					movePA(i+4);
-  						break;
-  					case 3:
-  						movePA(i-1);
-  						movePA(i+4);
-  						break;
-  					case 4:
-  						movePA(i-4);
-  						movePA(i+4);
-  						movePA(i+1);
-  						break;
-  					case 5:
-  					case 6:
-  					case 9:
-  					case 10:
-  						movePA(i-4);
-  						movePA(i+4);
-  						movePA(i+1);
-  						movePA(i-1);
-              					break;
-  					case 7: 
-  					case 11:
-  						movePA(i-4);
-  						movePA(i+4);
-  						movePA(i-1);
-              					break;
-  					case 8:
-  						movePA(i-4);
-  						movePA(i+1);
-  						movePA(i+4);
-  						break;
-  					case 12:
-  						movePA(i-4);
-  						movePA(i+1);
-  						break;
-  					case 13: 
-  					case 14:
-  						movePA(i-4);
-  						movePA(i-1);
-  						movePA(i+1);
-  						break;
-  					case 15:
-  						movePA(i-4);
-  						movePA(i-1);
-  						break;
-  					}       	
-  		}
-      			puzzle[i].observe('click', movepiece); }  
-  	}	;
+   // sets up events for all puzzle tiles
+   function setEvents(div) {
+      div.onmouseover = function () {
+         if (moveable(this)) {
+            this.classList.add("highlight"); // when mouse over, adds class "highlight"
+         }
+      };
+      div.onmouseout = function () {
+         // when mouse out, removes class "highlight"
+         if (moveable(this)) {
+            this.classList.remove("highlight"); // when mouse out, remove class "highlight"
+         }
+      };
+      div.onclick = helper;
+   }
+
+   // a helper function for function "makeAMove"
+   // displays "congratulations" if the player wins
+   function helper() {
+      if (moveable(this)) {
+         makeAMove(this);
+         if (win()) {
+            document.getElementById("output").innerHTML = "Congratulations! You win!";
+         } else {
+            document.getElementById("output").innerHTML = "";
+         }
+      }
+   }
+
+   // make one move for the given tile
+   function makeAMove(div) {
+
+      div.id = "square_" + spaceRow + "_" + spaceColumn;
+      var divRow = parseInt(div.style.top) / WIDTH;
+      var divColumn = parseInt(div.style.left) / WIDTH;
+
+      div.style.top = spaceRow * WIDTH + "px";
+      div.style.left = spaceColumn * WIDTH + "px";
+      spaceRow = divRow;
+      spaceColumn = divColumn;
+
+   }
+
+   // return true if the given tile is moveable
+   function moveable(div) {
+
+      var divRow = parseInt(div.style.top) / WIDTH;
+      var divColumn = parseInt(div.style.left) / WIDTH;
+      if (spaceRow == divRow) {
+         return Math.abs(spaceColumn - divColumn) == 1;
+      }
+      else if (spaceColumn == divColumn) {
+         return Math.abs(spaceRow - divRow) == 1;
+      }
+      else {
+         return false;
+      }
+   }
+
+   // return true if all tiles are at their original positions
+   function win() {
+      var tiles = document.querySelectorAll(".puzzletile");
+      for (var i = 0; i < tiles.length; i++) {
+         var row = Math.floor(i / NUM);
+         var column = i % NUM;
+         if (tiles[i].id != "square_" + row + "_" + column) {
+            console.log(tiles[i].id);
+            return false;
+         }
+      }
+      return true;
+   }
+})();
