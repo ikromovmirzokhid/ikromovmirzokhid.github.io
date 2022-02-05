@@ -1,121 +1,183 @@
-"use strict";
+/*Variabili che tracciano le informazioni della casella bianca.*/
+var blankX, blankY, blankId;
+var p, isWin;
 
-/* 	Chris Jimenez
-	CSE 154
-	Homework 8
-	This file injects a sliding puzzle into fifteen.html and allows the user to 
-	shuffle, and solve the puzzle.
-*/
+/*Inizializzatore del meccanismo, viene eseguito al caricamento del dom. Aggiunge gli id a tutti i div e inzializza le info sulla casella bianca. Poi avvia il meccanismo con updateColor() ed enableMove().*/
+document.observe("dom:loaded", function(){
+    $("shufflebutton").observe("click", shuffle);
+    let pieces = $$("#puzzlearea > div");
+    let x = 0, y = 0;
+    for(let i = 0; i < pieces.length; i++){
+        x = -((i % 4) * 100);
+        y = -(Math.floor(i / 4) * 100);
+        pieces[i].style.backgroundPosition = x + "px " + y + "px";
+        pieces[i].id = (i % 4) + "_" + (Math.floor(i / 4));
+    }
+    Object.prototype.canMove = __canMove;
+    blankX = 3;
+    blankY = 3;
+    blankId = "3_3";
+    p = document.createElement("p");
+    p.id = "winpar";
+    p.innerHTML = "Complimenti! Hai vinto!";
+    isWin = false;
+    updateColor();
+    enableMove();
+});
 
-(function() {
-	//Four variables, they keep track of the puzzle size (useful for changing puzzle size in option features
-	// Pixel width of the pieces (targeted toward extra features)
-	//Empty_x which keeps track of the x coordinate for the empty square
-	//empty_y which keeps track of the y coordinate for the empty square.
-	var PUZZLE_SIZE = 4;
-	var PIXEL = 100;
-	var EMPTY_X = 3;
-	var EMPTY_Y = 3;
+/*La funzione è listener del click sui div del puzzle, e veriricherà se l'elemento può muoversi e in caso positivo, chiamerà updatePosition().*/
+function moveDiv(event){
+    let pos = this.canMove();
+    if(pos != null)
+        updatePosition(this.id, pos.x, pos.y, 0.5);
+}
 
-	//Starts setup(), findMoveabelSquares(), and assigns onclick event handlers onto
-	//each puzzle piece, and the shuffle button.
-	function pageLoad() {
-		setup();
-		findMoveableSquares();
-		var squares = document.querySelectorAll(".piece");
-		for (var i = 0; i < squares.length ; i++) {
-			squares[i].onclick = moveSquare;
-		}
-		var shuffleButton = document.getElementById("shufflebutton");
-		shuffleButton.onclick = shuffle;
-	}
+/*La funzione è il listener del click sul pulsante shuffle. Inizializza il meccanismo di mescolamento (didabilita i movimenti e i colori) ed estrae il numero n random passato poi a shufflePos().*/
+function shuffle(){
+    if(isWin){
+        p.remove();
+        isWin = false;
+    }
+    updateColor(true);
+    disableMove();
+    shufflePos(Math.floor(Math.random() * 500) + 100);
+}
 
-	//Builds the puzzle in the HTML page. It creates 15 divs, gives each one a number, and specifies
-	//which part of the background each one gets. It also gives each one an initial ID of what their
-	//row, column position is.
-	function setup() {
-		var xoffset = 0;
-		var yoffset = 0;
-		var puzzleArea = document.getElementById("puzzlearea");
-		for (var i = 1; i < PUZZLE_SIZE * PUZZLE_SIZE; i++) {
-			var puzzleName = document.createElement("div");
-			puzzleName.classList.add("piece");
-			puzzleName.id = 'square_' + xoffset / PIXEL + '_' + yoffset / PIXEL;
-			puzzleName.innerHTML = i;
-			puzzleName.style.top = yoffset + 'px';
-			puzzleName.style.left = xoffset + 'px';
-			puzzleName.style.backgroundPosition = "-" + xoffset + "px -" + yoffset + "px";
-			puzzleArea.appendChild(puzzleName);
-			if (xoffset < PUZZLE_SIZE * PIXEL - PIXEL) {
-				xoffset += PIXEL;
-			} else {
-				xoffset = 0;
-				yoffset += PIXEL;
-			}
-		}
-	}
+/*La funzione è "ricorsiva" ed effettua n spostamenti casuali.*/
+function shufflePos(n){
+    if(n != 0)
+        randomMove(0.01, shufflePos, (n - 1));
+    else{
+        updateColor();
+        enableMove();
+    }
+}
 
-	//Used for the event when a square is clicked. If the square that is clicked is eligble to move,
-	// it then ReallyMovesIt.
-	function moveSquare() {
-		if(this.classList.contains('canmove')) {
-			reallyMoveSquare(this);
-		}
-	}
+/*La funzione effettua una mossa casuale a ritroso, cioè partendo dal pezzo bianco. Sceglierà casualmente in quale direzione effettuare la mossa, in base alla posizione della casela bianca.*/
+function randomMove(dur, _callback, n){
+    let x = 0, y = 0;
+    if(Math.floor(Math.random() * 2) == 1){
+        x = blankX;
+        if(blankY == 3)
+            y = blankY - 1;
+        else if(blankY == 0)
+            y = blankY + 1;
+        else{
+            if(Math.floor(Math.random() * 2) == 1)
+                y = blankY - 1;
+            else
+                y = blankY + 1;
+        }
+    }
+    else{
+        y = blankY;
+        if(blankX == 0)
+            x = blankX + 1;
+        else if(blankX == 3)
+            x = blankX - 1;
+        else{
+            if(Math.floor(Math.random() * 2) == 1)
+                x = blankX - 1;
+            else
+                x = blankX + 1;
+        }
+    }
+    let pos = $(x + "_" + y).canMove();
+    if(pos != null)
+        updatePosition((x + "_" + y), pos.x, pos.y, dur, _callback, n);
+    else
+        moving = false;
+}
 
-	//The purpose of the distinction between moveSquare and reallyMoveSquare 
-	//is because for my shuffle algorithm to work, the moveSquare needs to be passed a parameter.
-	//The onclick does not need a parameter, so I just have moveSquare run reallyMoveSquare(this). 
-	//At the end of moving the square, after the new x and y of the empty square is established,
-	//the moveable squares are recalculated.
-	function reallyMoveSquare(square) {
-		var oldX = parseInt(square.style.left) / PIXEL;
-		var oldY = parseInt(square.style.top) / PIXEL;
-		square.id = ('square_' + EMPTY_X + '_' + EMPTY_Y);
-		square.style.top = EMPTY_Y * PIXEL + 'px';
-		square.style.left = EMPTY_X * PIXEL + 'px';
-		EMPTY_X = oldX;
-		EMPTY_Y = oldY;
-		findMoveableSquares();
-	}
+/* La funzione muove un div alle nuove coordinate. In caso si stia eseguendo shufflePos(), _callback sarà definita con il riferimento a quest'ultima, per poter effettuare la chiamata ricorsiva.*/
+function updatePosition(id, newX, newY, dur, _callback, n){
+    disableMove();
+    new Effect.Move(id, {x: newX, y: newY, mode: 'relative', duration: dur, afterFinish: function(){
+        blankX += -Math.floor(newX / 100);
+        blankY += -Math.floor(newY / 100);
+        $(id).id = blankId;
+        blankId = id;
+        moving = false;
+        enableMove();
+        if(_callback != undefined)
+            _callback(n);
+        else{
+            updateColor();
+            checkSolved();
+        }
+    }});
+    //console.log("Sposto il div: " + newX + ", " + newY);
+}
 
-	//This finds the squares that are able to move. A square is able to move
-	//if it is next to the empty square.
-	function findMoveableSquares() {
-		var moveAble = document.querySelectorAll('.canmove');
-		for (var i = 0; i < moveAble.length; i++) {	
-			moveAble[i].classList.remove('canmove');
-		}
-		var eligibleX = [EMPTY_X, EMPTY_X + 1, EMPTY_X - 1];
-		var eligibleY = [EMPTY_Y, EMPTY_Y + 1, EMPTY_Y - 1];
-		for (var i = 0; i < eligibleX.length; i++) {
-			var row = eligibleX[i];
-			if(row >= 0 && row <= 3) {
-				for(var j = 0; j < eligibleY.length; j++) {
-					var col = eligibleY[j];
-					if((col >= 0 && col <= 3) && (col == EMPTY_Y && row != EMPTY_X || col != EMPTY_Y && row == EMPTY_X)) {
-						var eligiblePiece = "square_" + row + "_" + col;
-						document.getElementById(eligiblePiece).classList.add('canmove');
-					}
-				}
-			}
-		} 
-	}
-		
-	//The shuffle() is called when the shuffle button is pressed. It shuffles the puzzle to make it fun.
-	//The algorithm takes all the squares that are able to move, and randomly selects one to move.
-	//When one is selected, reallyMoveSquare(square) is called. square is the puzzle piece that is being moved.
-	//This is repeated 1000 times.
-	function shuffle() {
-		for (var i = 0; i < 1000; i++) {
-			var neighbors = document.querySelectorAll('.canmove');
-			var squares = neighbors.length;
-			var indexToChoose = parseInt(Math.random() * squares);
-			var square = neighbors[indexToChoose];
-			reallyMoveSquare(square);
-		}
-	}
+/*La funzione controlla se il puzzle è stato risolto.*/
+function checkSolved(){
+    let divs = $$("#puzzlearea > div");
+    let done = true;
+    for(let i = 0; i < divs.length; i++){
+        let div = divs[i];
+        let coord = div.id.split("_");
+        let x = parseInt(coord[0]);
+        let y = parseInt(coord[1]);
+        if(parseInt(div.innerHTML) != (x + (y * 4) + 1))
+            done = false;
+    }
+    if(done){
+        if(!isWin){
+            document.body.insertBefore(p, $("puzzlearea"));
+            isWin = true;
+        }
+    }
+    else
+        if(isWin){
+            p.remove();
+            isWin = false;
+        }
+}
 
-	window.onload = pageLoad;
+/*La funzione abilita il movimento per tutte le caselle: aggiunge gli osservatori dei click ad ogni div.*/
+function enableMove(){
+    $$("#puzzlearea > div").each(function(div){
+        div.observe("click", moveDiv);
+    });
+}
 
-})();
+/*La funzione disabilita il movimento per tutte le caselle: rimuove gli osservatori dei click da ogni div.*/
+function disableMove(){
+    $$("#puzzlearea > div").each(function(div){
+        div.stopObserving("click", moveDiv);
+    });
+}
+
+/*La funzione aggiorna le classi css: se il div si può gli assegnerà la classe movable, altrimenti la si toglierà. Se disable è definito, rimuoverà la classe a tutti gli elementi.*/
+function updateColor(disable){
+    $$("#puzzlearea > div").each(function(div){
+        if(disable){
+            if(div.hasClassName("movable"))
+                div.removeClassName("movable");
+        }
+        else{
+            if(div.canMove() != null){
+                if(!div.hasClassName("movable"))
+                    div.addClassName("movable");
+            }
+            else {
+                if(div.hasClassName("movable"))
+                    div.removeClassName("movable");
+            }
+        }
+    });
+}
+
+/* La funzione, che verrà agganciata ad un metodo canMove() chiamabile su un oggetto, ritorna le nuove coordinate se esso si piò muovere, null altrimenti */
+function __canMove(){
+    let posX = this.offsetLeft, posY = this.offsetTop;
+    let pposX = this.parentElement.offsetLeft, pposY = this.parentElement.offsetTop;
+    let x = Math.abs(Math.floor((pposX - posX) / 100));
+    let y = Math.abs(Math.floor((pposY - posY) / 100));
+    if((x == blankX) && Math.abs(y - blankY) == 1)
+        return {x: 0, y: ((y - blankY)*(-100))};
+    else if((y == blankY) && Math.abs(x - blankX) == 1)
+        return {x: ((x-blankX)*(-100)), y: 0};
+    else
+        return null;
+}
