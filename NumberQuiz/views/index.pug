@@ -1,0 +1,13 @@
+doctype html
+head
+  title Sum
+form(action='http://localhost:8080/answer' method='POST')
+  div
+    p Your current score is #{score}
+    p Guess the next number in the sequence
+    p #{q.question[0]}, #{q.question[1]}, #{q.question[2]}, #{q.question[3]}, #{q.question[4]}
+    label(for='answer') Your answer:
+    input(type='answer' name='answer')
+    br
+    br
+    input(type='submit' value='Submit')
