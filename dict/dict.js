@@ -29,9 +29,9 @@
     //harvest word from page
     var word = $("#word").val();
     var obj = {"word": word};
-    $.post("dict.php",obj)
+    $.post("/search",obj)
         .done(displaydefinition)
-        .fail(function () {alert ('fail');});
+        .fail(function () {alert ('Connection Error');});
 };
 
 var hookevents = function()
